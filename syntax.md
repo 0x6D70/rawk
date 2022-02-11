@@ -8,11 +8,11 @@ fn main() {
 }
 ```
 
-In this case the ``!`` marks a function that is built-in into the interpreter.
+In this case the ``!`` marks a function that is built into the interpreter.
 
 ## Typing
 
-Rawk uses static typing, therefore every variable has to be a certain type at declaration. The type can't change at runtime.
+Rawk uses static typing, therefore every variable has to have a certain type at declaration. The type can't change at runtime.
 
 Possible types:
  * String: "test"
@@ -22,7 +22,7 @@ Possible types:
  * bool: true/false
  * null
 
-Rawk also has a garbage collector.
+Rawk also will provide a garbage collector.
 
 ## Expressions
 
@@ -40,11 +40,11 @@ bool isTrue = false;
 
 ## Control flow
 
-Same as in C and furthermore you can iterate over an array by value using the ``in`` keyword.
+Also based on the C-Style, additionally you can iterate over array using the `in` keyword.
 
 ## Functions
 
-A function declaration uses the ``fn`` key word. A optional return value can be placed after the argument list.
+A function declaration uses the ``fn`` keyword. An optional return value can be placed after the argument list.
 
 ```
 fn sum(int a, int b) > int {
@@ -54,7 +54,7 @@ fn sum(int a, int b) > int {
 
 ## Classes
 
-Rawk supports classes. All variables of the methods of an object are public.
+Rawk supports Classes where all properties are public.
 
 ```
 class Test {

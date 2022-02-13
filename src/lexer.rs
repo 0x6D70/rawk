@@ -28,7 +28,7 @@ impl Lexer {
         Lexer {
             file_path: String::new(),
             source: source.chars().collect(),
-            line: 0,
+            line: 1,
             start: 0,
             current: 0,
             error: false,
@@ -200,7 +200,7 @@ impl Lexer {
     fn number_token(&mut self) -> Option<TokenType> {
         let mut is_float = false;
 
-        while self.advance().is_digit(10) {
+        while self.peek().is_digit(10) {
             self.advance();
         }
 
@@ -209,7 +209,7 @@ impl Lexer {
 
             self.advance();
 
-            while self.advance().is_digit(10) {
+            while self.peek().is_digit(10) {
                 self.advance();
             }
         }

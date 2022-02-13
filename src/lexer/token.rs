@@ -46,10 +46,10 @@ pub enum TokenType {
     SUPER,
     THIS,
     TRUE,
-    While,
-    In,
+    WHILE,
+    IN,
 
-    Eof,
+    EOF,
 }
 
 #[derive(Debug)]

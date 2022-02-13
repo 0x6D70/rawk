@@ -1,6 +1,8 @@
 mod lexer;
 mod reporter;
 
+use lexer::Lexer;
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -13,11 +15,13 @@ fn main() {
 }
 
 fn run_file(path: &str) {
-    let tokens = lexer::read_from_file(path);
+    let mut lexer = Lexer::from_file(path);
+
+    let tokens = lexer.lex_tokens();
 
     println!("{:#?}", tokens);
 
-    if let None = tokens {
+    if tokens.is_none() {
         std::process::exit(-1);
     }
 }

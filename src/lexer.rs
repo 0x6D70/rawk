@@ -1,8 +1,8 @@
 mod token;
 
-use token::Token;
-use crate::reporter;
 use self::token::TokenType;
+use crate::reporter;
+use token::Token;
 
 #[derive(Debug)]
 pub struct Lexer {
@@ -46,7 +46,7 @@ impl Lexer {
 
             if let Some(t) = token {
                 tokens.push(t);
-            }              
+            }
         }
 
         if self.error {
@@ -54,10 +54,10 @@ impl Lexer {
         }
 
         tokens.push(Token {
-            token_type: token::TokenType::EOF,
+            token_type: token::TokenType::Eof,
             lexeme: String::from(""),
             line: self.line,
-        });       
+        });
 
         Some(tokens)
     }
@@ -66,96 +66,97 @@ impl Lexer {
         let c = self.advance();
 
         let token = match c {
-            '(' => Some(TokenType::LEFTPAREN),
-            ')' => Some(TokenType::RIGHTPAREN),
-            '{' => Some(TokenType::LEFTCURL),
-            '}' => Some(TokenType::RIGHTCURL),
-            '[' => Some(TokenType::LEFTBRACK),
-            ']' => Some(TokenType::RIGHTBRACK),
-            ',' => Some(TokenType::COMMA),
-            '.' => Some(TokenType::DOT),
-            '+' => Some(TokenType::PLUS),
-            '-' => Some(TokenType::MINUS),
-            ';' => Some(TokenType::SEMICOLON),
+            '(' => Some(TokenType::Lefparen),
+            ')' => Some(TokenType::Rightparen),
+            '{' => Some(TokenType::Leftcurl),
+            '}' => Some(TokenType::Rightcurl),
+            '[' => Some(TokenType::Leftbrack),
+            ']' => Some(TokenType::Rightbrack),
+            ',' => Some(TokenType::Comma),
+            '.' => Some(TokenType::Dot),
+            '+' => Some(TokenType::Plus),
+            '-' => Some(TokenType::Minus),
+            ';' => Some(TokenType::Semicolon),
             '\r' => None,
             '\t' => None,
             ' ' => None,
             '\n' => {
                 self.line += 1;
                 None
-            },
+            }
             '"' => self.string_token(),
 
             // TODO: use macro to create two character tokens
             '&' => {
                 if self.match_next('&') {
-                    Some(TokenType::AND)
+                    Some(TokenType::And)
                 } else {
                     None
                 }
-            },
+            }
             '|' => {
                 if self.match_next('|') {
-                    Some(TokenType::OR)
+                    Some(TokenType::Or)
                 } else {
                     None
                 }
-            },
+            }
             '*' => {
                 if self.match_next('*') {
-                    Some(TokenType::POWER)
+                    Some(TokenType::Power)
                 } else {
-                    Some(TokenType::STAR)
+                    Some(TokenType::Star)
                 }
-            },
+            }
             '!' => {
                 if self.match_next('=') {
-                    Some(TokenType::BANGEQUAL)
+                    Some(TokenType::Bangequal)
                 } else {
-                    Some(TokenType::BANG)
+                    Some(TokenType::Bang)
                 }
-            },
+            }
             '=' => {
                 if self.match_next('=') {
-                    Some(TokenType::EQUALEQUAL)
+                    Some(TokenType::Equalequal)
                 } else {
-                    Some(TokenType::EQUAL)
+                    Some(TokenType::Equal)
                 }
-            },
+            }
             '>' => {
                 if self.match_next('=') {
-                    Some(TokenType::GREATEREQUAL)
+                    Some(TokenType::Greaterequal)
                 } else {
-                    Some(TokenType::GREATER)
+                    Some(TokenType::Greater)
                 }
-            },
+            }
             '<' => {
                 if self.match_next('=') {
-                    Some(TokenType::LESSEQUAL)
+                    Some(TokenType::Lessequal)
                 } else {
-                    Some(TokenType::LESS)
+                    Some(TokenType::Less)
                 }
-            },
+            }
             '/' => {
                 if self.match_next('/') {
-
                     while self.peek() != '\n' && !self.is_at_end() {
                         self.advance();
                     }
-                    
+
                     None
                 } else {
-                    Some(TokenType::SLASH)
+                    Some(TokenType::Slash)
                 }
-            },
-            '0'..='9' => {
-                self.number_token()
             }
-            _   => {
+            '0'..='9' => self.number_token(),
+            _ => {
                 if Lexer::is_alpha(c) {
                     self.identifier_token()
                 } else {
-                    reporter::report_error(&format!("unexpected character '{}' found", c), &self.file_path, self.line);
+                    reporter::report_error(
+                        &format!("unexpected character '{}' found", c),
+                        &self.file_path,
+                        self.line,
+                    );
                     self.error = true;
                     None
                 }
@@ -179,20 +180,20 @@ impl Lexer {
         }
 
         match self.get_lexem_string().as_str() {
-            "class" => Some(TokenType::CLASS),
-            "else" => Some(TokenType::ELSE),
-            "false" => Some(TokenType::FALSE),
-            "fn" => Some(TokenType::FN),
-            "for" => Some(TokenType::FOR),
-            "if" => Some(TokenType::IF),
-            "null" => Some(TokenType::NULL),
-            "return" => Some(TokenType::RETURN),
-            "super" => Some(TokenType::SUPER),
-            "this" => Some(TokenType::THIS),
-            "true" => Some(TokenType::TRUE),
-            "while" => Some(TokenType::WHILE),
-            "in" => Some(TokenType::IN),
-            _ => Some(TokenType::IDENTIFIER),
+            "class" => Some(TokenType::Class),
+            "else" => Some(TokenType::Else),
+            "false" => Some(TokenType::False),
+            "fn" => Some(TokenType::Fn),
+            "for" => Some(TokenType::For),
+            "if" => Some(TokenType::If),
+            "null" => Some(TokenType::Null),
+            "return" => Some(TokenType::Return),
+            "super" => Some(TokenType::Super),
+            "this" => Some(TokenType::This),
+            "true" => Some(TokenType::True),
+            "while" => Some(TokenType::While),
+            "in" => Some(TokenType::In),
+            _ => Some(TokenType::Identifier),
         }
     }
 
@@ -214,9 +215,9 @@ impl Lexer {
         }
 
         if is_float {
-            Some(TokenType::DOUBLE)
+            Some(TokenType::Double)
         } else {
-            Some(TokenType::INT)
+            Some(TokenType::Int)
         }
     }
 
@@ -238,7 +239,7 @@ impl Lexer {
         // closing "
         self.advance();
 
-        Some(TokenType::STRING)
+        Some(TokenType::String)
     }
 
     fn get_lexem_string(&self) -> String {
@@ -246,9 +247,7 @@ impl Lexer {
     }
 
     fn is_alpha(c: char) -> bool {
-        ('a'..='z').contains(&c) ||
-        ('A'..='Z').contains(&c) ||
-            c == '_'
+        ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) || c == '_'
     }
 
     fn advance(&mut self) -> char {

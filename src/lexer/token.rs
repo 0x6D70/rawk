@@ -1,55 +1,55 @@
 #[derive(Debug)]
 pub enum TokenType {
     // Single-character tokens.
-    LEFTPAREN, // (
-    RIGHTPAREN,
-    LEFTCURL, // {
-    RIGHTCURL,
-    LEFTBRACK, // [
-    RIGHTBRACK,
-    COMMA,
-    DOT,
-    MINUS,
-    PLUS,
-    SEMICOLON,
-    SLASH,
+    Lefparen, // (
+    Rightparen,
+    Leftcurl, // {
+    Rightcurl,
+    Leftbrack, // [
+    Rightbrack,
+    Comma,
+    Dot,
+    Minus,
+    Plus,
+    Semicolon,
+    Slash,
 
     // One or two character tokens.
-    STAR,
-    POWER,
-    BANG,
-    BANGEQUAL,
-    EQUAL,
-    EQUALEQUAL,
-    GREATER,
-    GREATEREQUAL,
-    LESS,
-    LESSEQUAL,
-    AND,
-    OR,
+    Star,
+    Power,
+    Bang,
+    Bangequal,
+    Equal,
+    Equalequal,
+    Greater,
+    Greaterequal,
+    Less,
+    Lessequal,
+    And,
+    Or,
 
     // Literals.
-    IDENTIFIER,
-    STRING,
-    INT,
-    DOUBLE,
+    Identifier,
+    String,
+    Int,
+    Double,
 
     // Keywords.
-    CLASS,
-    ELSE,
-    FALSE,
-    FN,
-    FOR,
-    IF,
-    NULL,
-    RETURN,
-    SUPER,
-    THIS,
-    TRUE,
-    WHILE,
-    IN,
+    Class,
+    Else,
+    False,
+    Fn,
+    For,
+    If,
+    Null,
+    Return,
+    Super,
+    This,
+    True,
+    While,
+    In,
 
-    EOF,
+    Eof,
 }
 
 #[derive(Debug)]

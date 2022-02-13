@@ -1,16 +1,20 @@
-mod lexer;
+use reporter::report_error;
 
+mod lexer;
+mod reporter;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
-    if args.len() < 2 {
+    if args.len() != 2 {
         println!("Usage: rawk <filename>");
         return;
     }
 
-    let path = &args[1];
+    run_file(&args[1]);
+}
 
+fn run_file(path: &str) {
     let tokens = lexer::read_from_file(path);
 
     println!("{:#?}", tokens);

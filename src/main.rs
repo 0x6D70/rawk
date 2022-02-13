@@ -1,5 +1,3 @@
-use reporter::report_error;
-
 mod lexer;
 mod reporter;
 
@@ -18,4 +16,8 @@ fn run_file(path: &str) {
     let tokens = lexer::read_from_file(path);
 
     println!("{:#?}", tokens);
+
+    if let None = tokens {
+        std::process::exit(-1);
+    }
 }

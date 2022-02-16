@@ -54,8 +54,6 @@ impl Lexer {
                 }
 
                 tokens.push(t);
-            } else {
-                self.error = true;
             }
         }
 
@@ -243,6 +241,8 @@ impl Lexer {
         if self.is_at_end() {
             reporter::report_error("underminated string", &self.file_path, self.line);
 
+            self.error = true;
+
             return None;
         }
 
@@ -317,8 +317,6 @@ fn test_underminated_string_lexing() {
     let mut l = Lexer::from_string(String::from("\"underminated"));
 
     let tokens = l.lex_tokens();
-
-    dbg!("{:#?}", &tokens);
 
     assert!(tokens.is_none());
 }

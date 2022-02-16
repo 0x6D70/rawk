@@ -54,6 +54,8 @@ impl Lexer {
                 }
 
                 tokens.push(t);
+            } else {
+                self.error = true;
             }
         }
 
@@ -308,6 +310,17 @@ fn test_string_lexing() {
 
     assert_eq!(tokens[0].lexeme, "test");
     assert_eq!(tokens[1].token_type, TokenType::Eof);
+}
+
+#[test]
+fn test_underminated_string_lexing() {
+    let mut l = Lexer::from_string(String::from("\"underminated"));
+
+    let tokens = l.lex_tokens();
+
+    dbg!("{:#?}", &tokens);
+
+    assert!(tokens.is_none());
 }
 
 #[test]

@@ -309,3 +309,18 @@ fn test_string_lexing() {
     assert_eq!(tokens[0].lexeme, "test");
     assert_eq!(tokens[1].token_type, TokenType::Eof);
 }
+
+#[test]
+fn test_line_number_lexing() {
+    let source_string = "\
+        fn main() {
+            int a = 2;
+        }
+    "; // <- Eof token is placed in the 4th line
+
+    let mut l = Lexer::from_string(String::from(source_string));
+
+    let mut tokens = l.lex_tokens().unwrap();
+
+    assert_eq!(tokens.pop().unwrap().line, 4);
+}

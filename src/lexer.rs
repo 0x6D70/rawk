@@ -44,7 +44,15 @@ impl Lexer {
 
             let token = self.get_next_token();
 
-            if let Some(t) = token {
+            if let Some(mut t) = token {
+                if t.token_type == TokenType::String {
+                    // remove the quotes from the string
+                    // this does not panic, because a String token is only created
+                    // if it has two quotes
+                    t.lexeme.remove(0);
+                    t.lexeme.remove(t.lexeme.len() - 1);
+                }
+
                 tokens.push(t);
             }
         }
@@ -290,4 +298,14 @@ impl Lexer {
     fn is_at_end(&self) -> bool {
         self.current >= self.source.len()
     }
+}
+
+#[test]
+fn test_string_lexing() {
+    let mut l = Lexer::from_string(String::from("\"test\""));
+
+    let tokens = l.lex_tokens().unwrap();
+
+    assert_eq!(tokens[0].lexeme, "test");
+    assert_eq!(tokens[1].token_type, TokenType::Eof);
 }

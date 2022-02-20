@@ -4,5 +4,8 @@ pub fn report_error(message: &str, file_name: &str, line: usize) {
 
 #[allow(dead_code)]
 pub fn report_warning(message: &str, file_name: &str, line: usize) {
-    println!("\x1b[93mWARNING\x1b[0m {} in {}:{}", message, file_name, line);
+    println!(
+        "\x1b[93mWARNING\x1b[0m {} in {}:{}",
+        message, file_name, line
+    );
 }

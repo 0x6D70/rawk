@@ -29,7 +29,5 @@ fn run_file(path: &str) {
 
     let mut parser = Parser::new(tokens);
 
-    println!("{:#?}", &parser);
-
     parser.parse();
 }

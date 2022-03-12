@@ -74,7 +74,7 @@ impl Lexer {
         let c = self.advance();
 
         let token = match c {
-            '(' => Some(TokenType::Lefparen),
+            '(' => Some(TokenType::Leftparen),
             ')' => Some(TokenType::Rightparen),
             '{' => Some(TokenType::Leftcurl),
             '}' => Some(TokenType::Rightcurl),

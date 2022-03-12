@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TokenType {
     // Single-character tokens.
-    Lefparen, // (
+    Leftparen, // (
     Rightparen,
     Leftcurl, // {
     Rightcurl,

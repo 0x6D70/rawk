@@ -1,4 +1,4 @@
-mod token;
+pub mod token;
 
 use self::token::TokenType;
 use crate::reporter;

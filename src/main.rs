@@ -1,7 +1,9 @@
 mod lexer;
+mod parser;
 mod reporter;
 
 use lexer::Lexer;
+use parser::Parser;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -19,9 +21,15 @@ fn run_file(path: &str) {
 
     let tokens = lexer.lex_tokens();
 
-    println!("{:#?}", tokens);
-
     if tokens.is_none() {
         std::process::exit(-1);
     }
+
+    let tokens = tokens.unwrap();
+
+    let mut parser = Parser::new(tokens);
+
+    println!("{:#?}", &parser);
+
+    parser.parse();
 }

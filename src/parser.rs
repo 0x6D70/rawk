@@ -17,10 +17,6 @@ macro_rules! match_tokens {
     };
 }
 
-// assert!(match_tokens!(self, TokenType::Fn));
-// assert!(match_tokens!(self, TokenType::Fn, TokenType::Identifier));
-// assert!(!match_tokens!(self, TokenType::Identifier));
-
 #[derive(Debug)]
 pub enum Expr {
     Binary {
@@ -267,4 +263,33 @@ fn test_pasic_parsing() {
         assert!(matches!(*left, Expr::LiteralInt(3)));
         assert!(matches!(*right, Expr::LiteralInt(2)));
     }
+}
+
+#[test]
+fn test_match_tokens() {
+    let mut parser = Parser::new(vec![
+        Token {
+            token_type: TokenType::Int,
+            lexeme: String::from("3"),
+            line: 1,
+        },
+        Token {
+            token_type: TokenType::Plus,
+            lexeme: String::from("+"),
+            line: 1,
+        },
+        Token {
+            token_type: TokenType::Int,
+            lexeme: String::from("2"),
+            line: 1,
+        },
+        Token {
+            token_type: TokenType::Eof,
+            lexeme: String::from(""),
+            line: 1,
+        },
+    ]);
+
+    assert!(match_tokens!(parser, TokenType::Int));
+    assert!(match_tokens!(parser, TokenType::Int, TokenType::Plus));
 }

@@ -219,3 +219,52 @@ impl Parser {
         self.peek().token_type == TokenType::Eof
     }
 }
+
+#[test]
+fn test_pasic_parsing() {
+    let mut parser = Parser::new(vec![
+        Token {
+            token_type: TokenType::Int,
+            lexeme: String::from("3"),
+            line: 1,
+        },
+        Token {
+            token_type: TokenType::Plus,
+            lexeme: String::from("+"),
+            line: 1,
+        },
+        Token {
+            token_type: TokenType::Int,
+            lexeme: String::from("2"),
+            line: 1,
+        },
+        Token {
+            token_type: TokenType::Eof,
+            lexeme: String::from(""),
+            line: 1,
+        },
+    ]);
+
+    let expr = parser.expression();
+
+    assert!(matches!(
+        expr,
+        Expr::Binary {
+            left: _,
+            operator: _,
+            right: _
+        }
+    ));
+
+    if let Expr::Binary {
+        left,
+        operator,
+        right,
+    } = expr
+    {
+        assert!(operator.token_type == TokenType::Plus);
+
+        assert!(matches!(*left, Expr::LiteralInt(3)));
+        assert!(matches!(*right, Expr::LiteralInt(2)));
+    }
+}

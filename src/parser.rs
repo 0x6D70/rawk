@@ -1,6 +1,9 @@
 use crate::lexer::token::{Token, TokenType};
 use crate::reporter;
 
+#[cfg(test)]
+use crate::lexer::token::TokenSpan;
+
 #[macro_export]
 macro_rules! match_tokens {
     ( $parser:expr, $( $x:expr ),* ) => {
@@ -182,8 +185,8 @@ impl Parser {
     }
 
     fn error(token: Token, msg: &str) -> ! {
-        // TODO: properly report file and line numbe here
-        reporter::report_error(format!("{:#?} {}", token, msg).as_str(), "", token.line);
+        // TODO: properly report file and line number here
+        reporter::report_error(format!("{:#?} {}", token, msg).as_str(), "", 0);
         panic!("parsing error");
     }
 
@@ -212,7 +215,7 @@ impl Parser {
     }
 
     fn is_at_end(&self) -> bool {
-        self.peek().token_type == TokenType::Eof
+        self.tokens.len() <= self.current
     }
 }
 
@@ -222,22 +225,17 @@ fn test_pasic_parsing() {
         Token {
             token_type: TokenType::Int,
             lexeme: String::from("3"),
-            line: 1,
+            span: TokenSpan { start: 0, end: 1 },
         },
         Token {
             token_type: TokenType::Plus,
             lexeme: String::from("+"),
-            line: 1,
+            span: TokenSpan { start: 0, end: 1 },
         },
         Token {
             token_type: TokenType::Int,
             lexeme: String::from("2"),
-            line: 1,
-        },
-        Token {
-            token_type: TokenType::Eof,
-            lexeme: String::from(""),
-            line: 1,
+            span: TokenSpan { start: 0, end: 1 },
         },
     ]);
 
@@ -271,22 +269,17 @@ fn test_match_tokens() {
         Token {
             token_type: TokenType::Int,
             lexeme: String::from("3"),
-            line: 1,
+            span: TokenSpan { start: 0, end: 1 },
         },
         Token {
             token_type: TokenType::Plus,
             lexeme: String::from("+"),
-            line: 1,
+            span: TokenSpan { start: 0, end: 1 },
         },
         Token {
             token_type: TokenType::Int,
             lexeme: String::from("2"),
-            line: 1,
-        },
-        Token {
-            token_type: TokenType::Eof,
-            lexeme: String::from(""),
-            line: 1,
+            span: TokenSpan { start: 0, end: 1 },
         },
     ]);
 

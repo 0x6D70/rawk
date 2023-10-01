@@ -48,15 +48,19 @@ pub enum TokenType {
     True,
     While,
     In,
+}
 
-    Eof,
+#[derive(Debug, Clone, Copy)]
+pub struct TokenSpan {
+    pub start: usize, // inclusive
+    pub end: usize,   // exclusive
 }
 
 #[derive(Debug, Clone)]
 pub struct Token {
     pub token_type: TokenType,
     pub lexeme: String,
-    pub line: usize,
+    pub span: TokenSpan,
 }
 
 impl Token {}

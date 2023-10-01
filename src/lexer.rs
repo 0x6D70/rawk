@@ -175,7 +175,7 @@ impl Lexer {
     }
 
     fn identifier_token(&mut self) -> Option<TokenType> {
-        while self.peek().is_digit(10) || Lexer::is_alpha(self.peek()) {
+        while self.peek().is_ascii_digit() || Lexer::is_alpha(self.peek()) {
             self.advance();
         }
 
@@ -200,16 +200,16 @@ impl Lexer {
     fn number_token(&mut self) -> Option<TokenType> {
         let mut is_float = false;
 
-        while self.peek().is_digit(10) {
+        while self.peek().is_ascii_digit() {
             self.advance();
         }
 
-        if self.peek() == '.' && self.peek_next().is_digit(10) {
+        if self.peek() == '.' && self.peek_next().is_ascii_digit() {
             is_float = true;
 
             self.advance();
 
-            while self.peek().is_digit(10) {
+            while self.peek().is_ascii_digit() {
                 self.advance();
             }
         }
@@ -261,7 +261,7 @@ impl Lexer {
     }
 
     fn is_alpha(c: char) -> bool {
-        ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) || c == '_'
+        c.is_ascii_lowercase() || c.is_ascii_uppercase() || c == '_'
     }
 
     fn advance(&mut self) -> char {

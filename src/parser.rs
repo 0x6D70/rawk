@@ -190,12 +190,7 @@ impl Parser {
     }
 
     fn error(&self, token: Token, msg: &str) -> ! {
-        reporter::report_error(
-            msg,
-            &self.file_path,
-            token.span,
-            None,
-        );
+        reporter::report_error(msg, &self.file_path, token.span, None);
         panic!("parsing error");
     }
 

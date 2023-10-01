@@ -45,12 +45,17 @@ pub enum Expr {
 #[derive(Debug)]
 pub struct Parser {
     tokens: Vec<Token>,
+    file_path: String,
     current: usize,
 }
 
 impl Parser {
-    pub fn new(tokens: Vec<Token>) -> Self {
-        Parser { tokens, current: 0 }
+    pub fn new(tokens: Vec<Token>, file_path: String) -> Self {
+        Parser {
+            tokens,
+            file_path,
+            current: 0,
+        }
     }
 
     pub fn parse(&mut self) {
@@ -169,7 +174,7 @@ impl Parser {
             return Expr::Grouping(Box::new(expr));
         }
 
-        Self::error(self.peek(), "Expect expression.");
+        self.error(self.peek(), "Expected expression.");
     }
 
     fn expression(&mut self) -> Expr {
@@ -181,12 +186,16 @@ impl Parser {
             return self.advance();
         }
 
-        Self::error(self.peek(), msg);
+        self.error(self.peek(), msg);
     }
 
-    fn error(token: Token, msg: &str) -> ! {
-        // TODO: properly report file and line number here
-        reporter::report_error(format!("{:#?} {}", token, msg).as_str(), "", 0);
+    fn error(&self, token: Token, msg: &str) -> ! {
+        reporter::report_error(
+            msg,
+            &self.file_path,
+            token.span,
+            None,
+        );
         panic!("parsing error");
     }
 
@@ -221,23 +230,26 @@ impl Parser {
 
 #[test]
 fn test_pasic_parsing() {
-    let mut parser = Parser::new(vec![
-        Token {
-            token_type: TokenType::Int,
-            lexeme: String::from("3"),
-            span: TokenSpan { start: 0, end: 1 },
-        },
-        Token {
-            token_type: TokenType::Plus,
-            lexeme: String::from("+"),
-            span: TokenSpan { start: 0, end: 1 },
-        },
-        Token {
-            token_type: TokenType::Int,
-            lexeme: String::from("2"),
-            span: TokenSpan { start: 0, end: 1 },
-        },
-    ]);
+    let mut parser = Parser::new(
+        vec![
+            Token {
+                token_type: TokenType::Int,
+                lexeme: String::from("3"),
+                span: TokenSpan { start: 0, end: 1 },
+            },
+            Token {
+                token_type: TokenType::Plus,
+                lexeme: String::from("+"),
+                span: TokenSpan { start: 0, end: 1 },
+            },
+            Token {
+                token_type: TokenType::Int,
+                lexeme: String::from("2"),
+                span: TokenSpan { start: 0, end: 1 },
+            },
+        ],
+        "".to_string(),
+    );
 
     let expr = parser.expression();
 
@@ -265,23 +277,26 @@ fn test_pasic_parsing() {
 
 #[test]
 fn test_match_tokens() {
-    let mut parser = Parser::new(vec![
-        Token {
-            token_type: TokenType::Int,
-            lexeme: String::from("3"),
-            span: TokenSpan { start: 0, end: 1 },
-        },
-        Token {
-            token_type: TokenType::Plus,
-            lexeme: String::from("+"),
-            span: TokenSpan { start: 0, end: 1 },
-        },
-        Token {
-            token_type: TokenType::Int,
-            lexeme: String::from("2"),
-            span: TokenSpan { start: 0, end: 1 },
-        },
-    ]);
+    let mut parser = Parser::new(
+        vec![
+            Token {
+                token_type: TokenType::Int,
+                lexeme: String::from("3"),
+                span: TokenSpan { start: 0, end: 1 },
+            },
+            Token {
+                token_type: TokenType::Plus,
+                lexeme: String::from("+"),
+                span: TokenSpan { start: 0, end: 1 },
+            },
+            Token {
+                token_type: TokenType::Int,
+                lexeme: String::from("2"),
+                span: TokenSpan { start: 0, end: 1 },
+            },
+        ],
+        "".to_string(),
+    );
 
     assert!(match_tokens!(parser, TokenType::Int));
     assert!(match_tokens!(parser, TokenType::Int, TokenType::Plus));

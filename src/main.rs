@@ -27,7 +27,7 @@ fn run_file(path: &str) {
 
     let tokens = tokens.unwrap();
 
-    let mut parser = Parser::new(tokens);
+    let mut parser = Parser::new(tokens, path.to_string());
 
     parser.parse();
 }

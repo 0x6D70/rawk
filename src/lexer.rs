@@ -152,7 +152,11 @@ impl Lexer {
                     reporter::report_error(
                         &format!("unexpected character '{}' found", c),
                         &self.file_path,
-                        self.get_line_from_idx(self.current),
+                        TokenSpan {
+                            start: self.current,
+                            end: self.current + 1,
+                        },
+                        None,
                     );
                     self.error = true;
                     None
@@ -230,7 +234,11 @@ impl Lexer {
             reporter::report_error(
                 "underminated string",
                 &self.file_path,
-                self.get_line_from_idx(self.current),
+                TokenSpan {
+                    start: self.start,
+                    end: self.start + 1,
+                },
+                Some("this string is unterminated"),
             );
 
             self.error = true;
@@ -242,18 +250,6 @@ impl Lexer {
         self.advance();
 
         Some(TokenType::String)
-    }
-
-    pub fn get_line_from_idx(&self, idx: usize) -> usize {
-        let mut line = 1;
-
-        for c in &self.source[0..idx] {
-            if *c == '\n' {
-                line += 1;
-            }
-        }
-
-        line
     }
 
     fn get_lexem_string(&self) -> String {

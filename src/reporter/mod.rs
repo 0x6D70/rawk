@@ -1,11 +1,29 @@
-pub fn report_error(message: &str, file_name: &str, line: usize) {
-    eprintln!("\x1b[91mERROR\x1b[0m {} in {}:{}", message, file_name, line);
+use crate::lexer::token::TokenSpan;
+use ariadne::{Label, Report, ReportKind, Source};
+
+pub fn report_error(message: &str, file_path: &str, span: TokenSpan, opt_label: Option<&str>) {
+    let file_content = std::fs::read_to_string(file_path).unwrap();
+
+    Report::build(ReportKind::Error, file_path, span.start)
+        .with_message(message)
+        .with_label(
+            Label::new((file_path, span.start..span.end)).with_message(opt_label.unwrap_or("")),
+        )
+        .finish()
+        .print((file_path, Source::from(file_content.as_str())))
+        .unwrap();
 }
 
 #[allow(dead_code)]
-pub fn report_warning(message: &str, file_name: &str, line: usize) {
-    println!(
-        "\x1b[93mWARNING\x1b[0m {} in {}:{}",
-        message, file_name, line
-    );
+pub fn report_warning(message: &str, file_path: &str, span: TokenSpan, opt_label: Option<&str>) {
+    let file_content = std::fs::read_to_string(file_path).unwrap();
+
+    Report::build(ReportKind::Error, file_path, span.start)
+        .with_message(message)
+        .with_label(
+            Label::new((file_path, span.start..span.end)).with_message(opt_label.unwrap_or("")),
+        )
+        .finish()
+        .print((file_path, Source::from(file_content.as_str())))
+        .unwrap();
 }

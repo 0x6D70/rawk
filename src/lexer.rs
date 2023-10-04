@@ -1,6 +1,6 @@
 pub mod token;
 
-use self::token::TokenType;
+use self::token::{TokenSpan, TokenType};
 use crate::reporter;
 use token::Token;
 
@@ -8,7 +8,6 @@ use token::Token;
 pub struct Lexer {
     file_path: String,
     source: Vec<char>,
-    line: usize,
     start: usize,
     current: usize,
     error: bool,
@@ -28,7 +27,6 @@ impl Lexer {
         Lexer {
             file_path: String::new(),
             source: source.chars().collect(),
-            line: 1,
             start: 0,
             current: 0,
             error: false,
@@ -61,12 +59,6 @@ impl Lexer {
             return None;
         }
 
-        tokens.push(Token {
-            token_type: token::TokenType::Eof,
-            lexeme: String::from(""),
-            line: self.line,
-        });
-
         Some(tokens)
     }
 
@@ -88,10 +80,7 @@ impl Lexer {
             '\r' => None,
             '\t' => None,
             ' ' => None,
-            '\n' => {
-                self.line += 1;
-                None
-            }
+            '\n' => None,
             '"' => self.string_token(),
 
             // TODO: use macro to create two character tokens
@@ -163,7 +152,11 @@ impl Lexer {
                     reporter::report_error(
                         &format!("unexpected character '{}' found", c),
                         &self.file_path,
-                        self.line,
+                        TokenSpan {
+                            start: self.current,
+                            end: self.current + 1,
+                        },
+                        None,
                     );
                     self.error = true;
                     None
@@ -174,7 +167,10 @@ impl Lexer {
         if let Some(t) = token {
             Some(Token {
                 token_type: t,
-                line: self.line,
+                span: TokenSpan {
+                    start: self.start,
+                    end: self.current,
+                },
                 lexeme: self.get_lexem_string(),
             })
         } else {
@@ -183,7 +179,7 @@ impl Lexer {
     }
 
     fn identifier_token(&mut self) -> Option<TokenType> {
-        while self.peek().is_digit(10) || Lexer::is_alpha(self.peek()) {
+        while self.peek().is_ascii_digit() || Lexer::is_alpha(self.peek()) {
             self.advance();
         }
 
@@ -208,16 +204,16 @@ impl Lexer {
     fn number_token(&mut self) -> Option<TokenType> {
         let mut is_float = false;
 
-        while self.peek().is_digit(10) {
+        while self.peek().is_ascii_digit() {
             self.advance();
         }
 
-        if self.peek() == '.' && self.peek_next().is_digit(10) {
+        if self.peek() == '.' && self.peek_next().is_ascii_digit() {
             is_float = true;
 
             self.advance();
 
-            while self.peek().is_digit(10) {
+            while self.peek().is_ascii_digit() {
                 self.advance();
             }
         }
@@ -231,15 +227,19 @@ impl Lexer {
 
     fn string_token(&mut self) -> Option<TokenType> {
         while self.peek() != '"' && !self.is_at_end() {
-            if self.peek() == '\n' {
-                self.line += 1;
-            }
-
             self.advance();
         }
 
         if self.is_at_end() {
-            reporter::report_error("underminated string", &self.file_path, self.line);
+            reporter::report_error(
+                "underminated string",
+                &self.file_path,
+                TokenSpan {
+                    start: self.start,
+                    end: self.start + 1,
+                },
+                Some("this string is unterminated"),
+            );
 
             self.error = true;
 
@@ -257,7 +257,7 @@ impl Lexer {
     }
 
     fn is_alpha(c: char) -> bool {
-        ('a'..='z').contains(&c) || ('A'..='Z').contains(&c) || c == '_'
+        c.is_ascii_lowercase() || c.is_ascii_uppercase() || c == '_'
     }
 
     fn advance(&mut self) -> char {
@@ -309,7 +309,6 @@ fn test_string_lexing() {
     let tokens = l.lex_tokens().unwrap();
 
     assert_eq!(tokens[0].lexeme, "test");
-    assert_eq!(tokens[1].token_type, TokenType::Eof);
 }
 
 #[test]
@@ -327,11 +326,11 @@ fn test_line_number_lexing() {
         fn main() {
             int a = 2;
         }
-    "; // <- Eof token is placed in the 4th line
+    ";
 
     let mut l = Lexer::from_string(String::from(source_string));
 
     let mut tokens = l.lex_tokens().unwrap();
 
-    assert_eq!(tokens.pop().unwrap().line, 4);
+    assert_eq!(tokens.pop().unwrap().token_type, TokenType::Rightcurl);
 }

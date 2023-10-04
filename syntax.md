@@ -1,4 +1,4 @@
-# Syntax Documentaiton of Rawk
+# Syntax Documentation of Rawk
 
 ## Hello World
 
@@ -40,7 +40,14 @@ bool isTrue = false;
 
 ## Control flow
 
-Also based on the C-Style, additionally you can iterate over array using the `in` keyword.
+Also based on the C-Style, additionally you can iterate over an array using the `in` keyword.
+
+```
+for value in array
+{
+ ...
+}
+```
 
 ## Functions
 
@@ -54,7 +61,7 @@ fn sum(int a, int b) > int {
 
 ## Classes
 
-Rawk supports Classes where all properties are public.
+Rawk supports classes where all properties are public.
 
 ```
 class Test {

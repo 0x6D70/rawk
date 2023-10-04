@@ -1,4 +1,4 @@
-# Syntax Documentaiton of Rawk
+# Syntax Documentation of Rawk
 
 ## Hello World
 

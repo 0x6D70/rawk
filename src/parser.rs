@@ -42,6 +42,39 @@ pub enum Expr {
     LiteralString(String),
 }
 
+fn evaluate(expr: Expr) -> isize {
+    match expr {
+        Expr::Binary {
+            left,
+            operator,
+            right,
+        } => {
+            let left = evaluate(*left);
+            let right = evaluate(*right);
+
+            match operator.token_type {
+                TokenType::Plus => left + right,
+                TokenType::Minus => left - right,
+                TokenType::Star => left * right,
+                TokenType::Slash => left / right,
+                _ => panic!("Invalid binary operator"),
+            }
+        }
+        Expr::Unary { operator, right } => {
+            let right = evaluate(*right);
+
+            match operator.token_type {
+                TokenType::Minus => -right,
+                TokenType::Plus => right,
+                _ => panic!("Invalid unary operator"),
+            }
+        }
+        Expr::Grouping(expression) => evaluate(*expression),
+        Expr::LiteralInt(value) => value as isize,
+        _ => panic!("Invalid expression"),
+    }
+}
+
 #[derive(Debug)]
 pub struct Parser {
     tokens: Vec<Token>,
@@ -62,6 +95,8 @@ impl Parser {
         let expr = self.expression();
 
         println!("{:#?}", expr);
+
+        println!("result: {}", evaluate(expr));
     }
 
     fn equality(&mut self) -> Expr {

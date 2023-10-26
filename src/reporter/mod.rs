@@ -5,7 +5,14 @@ pub fn report_error(message: &str, file_path: &str, span: TokenSpan, opt_label: 
     let file_content = std::fs::read_to_string(file_path);
 
     if file_content.is_err() {
-        eprintln!("Error: {} {}:{}-{} {}", message, file_path, span.start, span.end, opt_label.unwrap_or(""));
+        eprintln!(
+            "Error: {} {}:{}-{} {}",
+            message,
+            file_path,
+            span.start,
+            span.end,
+            opt_label.unwrap_or("")
+        );
         return;
     }
 
@@ -26,7 +33,14 @@ pub fn report_warning(message: &str, file_path: &str, span: TokenSpan, opt_label
     let file_content = std::fs::read_to_string(file_path);
 
     if file_content.is_err() {
-        println!("Warning: {} {}:{}-{} {}", message, file_path, span.start, span.end, opt_label.unwrap_or(""));
+        println!(
+            "Warning: {} {}:{}-{} {}",
+            message,
+            file_path,
+            span.start,
+            span.end,
+            opt_label.unwrap_or("")
+        );
         return;
     }
 

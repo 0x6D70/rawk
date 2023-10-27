@@ -164,12 +164,34 @@ impl Parser {
             return Expr::LiteralNull;
         }
         if match_tokens!(self, TokenType::Int) {
-            // TODO: add check for power here
-            return Expr::LiteralInt(self.previous().lexeme.parse().unwrap());
+            let expr = Expr::LiteralInt(self.previous().lexeme.parse().unwrap());
+
+            if match_tokens!(self, TokenType::Power) {
+                let op = self.previous();
+                let right = self.primary();
+                return Expr::Binary {
+                    left: Box::new(expr),
+                    operator: op,
+                    right: Box::new(right),
+                };
+            }
+
+            return expr;
         }
         if match_tokens!(self, TokenType::Double) {
-            // TODO: add check for power here
-            return Expr::LiteralDouble(self.previous().lexeme.parse().unwrap());
+            let expr = Expr::LiteralDouble(self.previous().lexeme.parse().unwrap());
+
+            if match_tokens!(self, TokenType::Power) {
+                let op = self.previous();
+                let right = self.primary();
+                return Expr::Binary {
+                    left: Box::new(expr),
+                    operator: op,
+                    right: Box::new(right),
+                };
+            }
+
+            return expr;
         }
         if match_tokens!(self, TokenType::String) {
             return Expr::LiteralString(self.previous().lexeme);

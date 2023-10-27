@@ -77,6 +77,7 @@ impl Lexer {
             '+' => Some(TokenType::Plus),
             '-' => Some(TokenType::Minus),
             ';' => Some(TokenType::Semicolon),
+            '%' => Some(TokenType::Remainder),
             '\r' => None,
             '\t' => None,
             ' ' => None,

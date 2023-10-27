@@ -121,7 +121,12 @@ impl Parser {
     fn factor(&mut self) -> Expr {
         let mut expr = self.unary();
 
-        while match_tokens!(self, TokenType::Slash, TokenType::Star) {
+        while match_tokens!(
+            self,
+            TokenType::Slash,
+            TokenType::Star,
+            TokenType::Remainder
+        ) {
             let op = self.previous();
             let right = self.unary();
             expr = Expr::Binary {
@@ -159,9 +164,11 @@ impl Parser {
             return Expr::LiteralNull;
         }
         if match_tokens!(self, TokenType::Int) {
+            // TODO: add check for power here
             return Expr::LiteralInt(self.previous().lexeme.parse().unwrap());
         }
         if match_tokens!(self, TokenType::Double) {
+            // TODO: add check for power here
             return Expr::LiteralDouble(self.previous().lexeme.parse().unwrap());
         }
         if match_tokens!(self, TokenType::String) {

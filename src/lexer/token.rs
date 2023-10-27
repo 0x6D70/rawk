@@ -13,6 +13,7 @@ pub enum TokenType {
     Plus,
     Semicolon,
     Slash,
+    Remainder,
 
     // One or two character tokens.
     Star,

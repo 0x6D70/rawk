@@ -153,7 +153,6 @@ impl Parser {
     }
 
     fn primary(&mut self) -> Expr {
-        // TODO: refactor this (probably use match???)
         if match_tokens!(self, TokenType::False) {
             return Expr::LiteralFalse;
         }
